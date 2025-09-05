@@ -1,0 +1,27 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# Data cache files
+data/schemas.json
+data/schemas.json.backup
+
+# generated data
+*.csv
+
+# uv-related artifacts
+uv.lock
+
+# CLAUDE-related artifacts
+CLAUDE.md

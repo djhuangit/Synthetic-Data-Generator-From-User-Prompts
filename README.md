@@ -1,6 +1,6 @@
 # Synthetic Data Generator From User Prompt
 
-A FastAPI-based service that generates realistic synthetic datasets from natural language descriptions. Built with the assistance of **BMAD (Build, Measure, Analyze, Deploy)** methodology and **Claude Code**.
+A FastAPI-based service that generates realistic synthetic datasets from natural language descriptions. Built with the assistance of **BMAD (Breakthrough Method of Agile AI-Driven Development)** methodology and **Claude Code**.
 
 ## Features
 
@@ -50,7 +50,7 @@ GET /api/v1/cache/stats
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd assignment10
+cd data_generator_from_user_prompt
 
 # Install dependencies
 uv sync
@@ -69,44 +69,7 @@ LOG_LEVEL=INFO
 
 ## BMAD Setup
 
-This project uses the **BMAD (Build, Measure, Analyze, Deploy)** methodology for systematic development. To set up BMAD for this project:
-
-### Prerequisites
-- Python 3.11+
-- [uv](https://docs.astral.sh/uv/) package manager
-- Access to BMAD workshop materials
-
-### BMAD Configuration
-```bash
-# Initialize BMAD core in your project
-mkdir -p .bmad-core
-cd .bmad-core
-
-# Copy BMAD configuration templates (if available)
-cp ../path/to/bmad-templates/* .
-
-# Set up BMAD environment variables
-echo "BMAD_PROJECT_NAME=data_generator_from_user_prompt" >> ../.env
-echo "BMAD_PHASE=BUILD" >> ../.env
-```
-
-### BMAD Workflow
-1. **Build**: Implement features using user stories and acceptance criteria
-2. **Measure**: Monitor performance metrics and test coverage
-3. **Analyze**: Review code quality, performance bottlenecks, and user feedback
-4. **Deploy**: Package and deploy with proper monitoring
-
-### User Stories Integration
-The project follows BMAD's story-driven development approach:
-- User stories are documented in `docs/stories/`
-- Each feature maps to specific acceptance criteria
-- Implementation follows the BMAD build-measure cycle
-
-### BMAD Tools
-- **Development Assistant**: Claude Code for AI-powered development
-- **Testing Framework**: Custom testing without external dependencies
-- **Performance Monitoring**: Built-in metrics collection
-- **Documentation**: Automated documentation generation
+This project uses the **BMAD** methodology for systematic development. To set up BMAD for this project, refer to [this official repository](https://github.com/bmad-code-org/BMAD-METHOD) for more information.
 
 ## Running the Service
 
@@ -230,7 +193,7 @@ The service generates realistic data across multiple domains:
 This project was developed using modern software engineering practices:
 
 ### Methodology
-- **BMAD Framework**: Build, Measure, Analyze, Deploy approach for systematic development
+- **BMAD Framework**: Breakthrough Method of Agile AI-Driven Development approach for systematic development
 - **Story-Driven Development**: Feature implementation based on user stories and acceptance criteria
 
 ### Tools Used
@@ -281,14 +244,3 @@ This project demonstrates modern AI-assisted development practices:
 2. **Test-Driven Approach**: Comprehensive testing without external API dependencies
 3. **Performance Focus**: Built with scalability and speed requirements in mind
 4. **Documentation**: Clear documentation and examples for easy adoption
-
-## License
-
-This project was created as part of the BMAD workshop for educational purposes.
-
-## Acknowledgments
-
-- **BMAD Workshop**: For providing the systematic development framework
-- **Claude Code**: For AI-powered development assistance and code generation
-- **Faker Community**: For the excellent synthetic data generation library
-- **FastAPI Team**: For the modern, high-performance web framework

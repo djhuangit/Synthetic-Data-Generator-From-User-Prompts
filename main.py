@@ -26,9 +26,17 @@ app.include_router(api_router, prefix="/api/v1")
 
 
 @app.get("/health")
-async def health_check() -> Dict[str, str]:
+async def health_check() -> Dict:
     """Health check endpoint for monitoring service status."""
-    return {"status": "healthy", "service": "synthetic-data-service"}
+    from src.core.config import settings
+    response = {
+        "status": "healthy",
+        "service": "synthetic-data-service",
+        "demo_mode": settings.DEMO_MODE
+    }
+    if settings.DEMO_MODE:
+        response["note"] = "Running in demo mode - using mock data (no OpenAI API required)"
+    return response
 
 
 @app.get("/")

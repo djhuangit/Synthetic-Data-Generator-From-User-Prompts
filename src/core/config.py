@@ -33,15 +33,23 @@ class Settings:
     MIN_DESCRIPTION_LENGTH: int = int(os.getenv("MIN_DESCRIPTION_LENGTH", "10"))
     MAX_ROWS: int = int(os.getenv("MAX_ROWS", "10000"))
     MIN_ROWS: int = int(os.getenv("MIN_ROWS", "1"))
-    
+
+    # Demo/Test Mode (allows running without OpenAI API key)
+    DEMO_MODE: bool = os.getenv("DEMO_MODE", "false").lower() == "true"
+
     def validate_settings(self) -> None:
         """Validate required settings are present."""
+        # Skip API key validation in demo mode
+        if self.DEMO_MODE:
+            return
+
         if not self.OPENAI_API_KEY:
             raise ValueError(
                 "OPENAI_API_KEY environment variable is required. "
-                "Please set it in your .env file or environment."
+                "Please set it in your .env file or environment. "
+                "Or set DEMO_MODE=true to test without an API key."
             )
-        
+
         if not self.OPENAI_API_KEY.startswith(("sk-", "sk-proj-")):
             raise ValueError(
                 "OPENAI_API_KEY appears to be invalid. "

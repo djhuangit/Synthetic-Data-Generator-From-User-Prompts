@@ -76,10 +76,30 @@ This project uses the **BMAD** methodology for systematic development. To set up
 
 ## Running the Service
 
+### Testing Without OpenAI API Key (Demo Mode)
+
+You can test the **entire application** without an OpenAI API key using Demo Mode:
+
+```bash
+# Install dependencies
+uv sync
+
+# Run in demo mode (no API key needed!)
+DEMO_MODE=true uv run python main.py
+
+# Or run the comprehensive test suite
+uv run python test_demo_mode.py
+```
+
+Demo Mode uses predefined templates for common data domains (e-commerce, healthcare, finance, etc.) and allows you to test Gradio, FastAPI, and all backend services without API costs. See [DEMO_MODE.md](DEMO_MODE.md) for details.
+
 ### Start the Server (with Gradio Frontend)
 ```bash
 # Install dependencies (including Gradio)
 uv sync
+
+# Set your OpenAI API key
+export OPENAI_API_KEY=your_key_here
 
 # Run the integrated application
 uv run python main.py

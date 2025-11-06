@@ -10,7 +10,6 @@ from typing import Tuple, Optional
 import time
 from datetime import datetime
 
-from src.services.schema_generator import SchemaGenerator
 from src.services.data_generator import DataGenerator
 from src.services.csv_exporter import CSVExporter
 from src.core.exceptions import (
@@ -35,11 +34,14 @@ class GradioInterface:
         from src.core.config import settings
 
         if self.schema_generator is None:
-            # Use mock or real generator based on DEMO_MODE
+            # Use mock or real generator based on DEMO_MODE and API_PROVIDER
             if settings.DEMO_MODE:
                 from src.services.mock_schema_generator import MockSchemaGenerator
                 self.schema_generator = MockSchemaGenerator()
-            else:
+            elif settings.API_PROVIDER == "anthropic":
+                from src.services.anthropic_schema_generator import AnthropicSchemaGenerator
+                self.schema_generator = AnthropicSchemaGenerator()
+            else:  # default to openai
                 from src.services.schema_generator import SchemaGenerator
                 self.schema_generator = SchemaGenerator()
 

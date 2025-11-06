@@ -4,6 +4,7 @@ A FastAPI-based service that generates realistic synthetic datasets from natural
 
 ## Features
 
+- **Gradio Web Interface**: User-friendly web UI for generating datasets without code
 - **Natural Language Input**: Describe your dataset needs in plain English
 - **Intelligent Schema Generation**: Powered by OpenAI GPT-4o-mini for Faker-compatible schemas
 - **High-Quality Synthetic Data**: Uses Faker library with 80+ field types and domain-specific values
@@ -11,6 +12,8 @@ A FastAPI-based service that generates realistic synthetic datasets from natural
 - **CSV Export**: Ready-to-use CSV files compatible with pandas, Excel, and data science tools
 - **Performance Optimized**: Generate 1,000+ rows/second with sub-30-second response times
 - **Schema Caching**: Intelligent caching reduces API costs and improves performance
+- **REST API**: Full-featured API for programmatic access
+- **Heroku Ready**: Single-dyno deployment for cost-effective hosting
 
 ## API Endpoints
 
@@ -73,15 +76,55 @@ This project uses the **BMAD** methodology for systematic development. To set up
 
 ## Running the Service
 
-### Start the Server
+### Testing Without OpenAI API Key (Demo Mode)
+
+You can test the **entire application** without an OpenAI API key using Demo Mode:
+
 ```bash
-uv run uvicorn main:app --host 0.0.0.0 --port 8000
+# Install dependencies
+uv sync
+
+# Run in demo mode (no API key needed!)
+DEMO_MODE=true uv run python main.py
+
+# Or run the comprehensive test suite
+uv run python test_demo_mode.py
 ```
 
-### Access the API
+Demo Mode uses predefined templates for common data domains (e-commerce, healthcare, finance, etc.) and allows you to test Gradio, FastAPI, and all backend services without API costs. See [DEMO_MODE.md](DEMO_MODE.md) for details.
+
+### Start the Server (with Gradio Frontend)
+```bash
+# Install dependencies (including Gradio)
+uv sync
+
+# Set your OpenAI API key
+export OPENAI_API_KEY=your_key_here
+
+# Run the integrated application
+uv run python main.py
+```
+
+### Access the Application
+- **Gradio Web Interface**: http://localhost:8000/gradio (or http://localhost:8000/)
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 - **Cache Stats**: http://localhost:8000/api/v1/cache/stats
+
+### Using the Gradio Interface
+
+The Gradio interface provides an intuitive way to generate datasets:
+
+1. **Enter Description**: Describe your dataset in natural language
+2. **Set Row Count**: Choose how many rows to generate (1-10,000)
+3. **Generate**: Click the generate button
+4. **Preview**: View the first 100 rows in your browser
+5. **Download**: Download the complete dataset as CSV
+
+**Example Prompts:**
+- "E-commerce product catalog with product names, categories, prices, ratings, and stock status"
+- "Healthcare patient records with names, ages, blood types, medical conditions, and departments"
+- "Financial transactions with account holders, account numbers, transaction amounts, dates, and merchants"
 
 ## Testing Without OpenAI API Key
 
@@ -218,6 +261,8 @@ data_generator_from_user_prompt/
 │   ├── api/
 │   │   ├── models.py          # Pydantic models
 │   │   └── routes.py          # FastAPI routes
+│   ├── frontend/
+│   │   └── gradio_app.py      # Gradio web interface
 │   ├── services/
 │   │   ├── schema_generator.py # OpenAI integration
 │   │   ├── data_generator.py   # Faker-based data generation
@@ -233,7 +278,53 @@ data_generator_from_user_prompt/
 ├── docs/stories/              # User stories and documentation
 ├── main.py                    # Application entry point
 ├── test_full_pipeline.py      # Complete pipeline testing
+├── Procfile                   # Heroku deployment config
+├── runtime.txt                # Python version for Heroku
+├── requirements.txt           # Python dependencies
+├── DEPLOYMENT.md              # Deployment guide
 └── README.md
+```
+
+## Deployment
+
+### Heroku Deployment (Recommended)
+
+This application is configured for easy deployment to Heroku with a single Basic dyno ($7/month):
+
+```bash
+# Login to Heroku
+heroku login
+
+# Create new app
+heroku create your-app-name
+
+# Set environment variables
+heroku config:set OPENAI_API_KEY=your_key_here
+heroku config:set CACHE_ENABLED=true
+
+# Deploy
+git push heroku main
+
+# Open application
+heroku open
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+### Local Development
+
+```bash
+# Install dependencies
+uv sync
+
+# Set environment variables
+export OPENAI_API_KEY=your_key_here
+export CACHE_ENABLED=true
+
+# Run application
+uv run python main.py
+
+# Access at http://localhost:8000
 ```
 
 ## Contributing

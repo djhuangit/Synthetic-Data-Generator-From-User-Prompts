@@ -20,12 +20,32 @@ router = APIRouter()
 
 # Initialize services lazily to allow server to start without API key
 _schema_generator = None
+_mock_schema_generator = None
 _data_generator = None
 _csv_exporter = None
 
-def get_schema_generator() -> SchemaGenerator:
-    """Get schema generator instance, initializing if needed."""
-    global _schema_generator
+def get_schema_generator():
+    """
+    Get schema generator instance, initializing if needed.
+    Returns MockSchemaGenerator in demo mode, SchemaGenerator otherwise.
+    """
+    global _schema_generator, _mock_schema_generator
+
+    # Debug: Log what mode we're in
+    import logging
+    logger = logging.getLogger("uvicorn")
+    logger.info(f"get_schema_generator called - DEMO_MODE={settings.DEMO_MODE}")
+
+    # Use mock generator in demo mode
+    if settings.DEMO_MODE:
+        logger.info("Using MockSchemaGenerator")
+        if _mock_schema_generator is None:
+            from src.services.mock_schema_generator import MockSchemaGenerator
+            _mock_schema_generator = MockSchemaGenerator()
+        return _mock_schema_generator
+
+    # Use real generator in production mode
+    logger.info("Using real SchemaGenerator")
     if _schema_generator is None:
         _schema_generator = SchemaGenerator()
     return _schema_generator
@@ -89,6 +109,8 @@ async def generate_dataset(request: DatasetRequest) -> Response:
         headers["X-Generation-Time"] = str(round(total_time, 3))
         headers["X-Domain"] = generated_schema.domain
         headers["X-Description-Hash"] = generated_schema.description_hash
+        if settings.DEMO_MODE:
+            headers["X-Demo-Mode"] = "true"
         
         # Return CSV as response
         return Response(

@@ -20,6 +20,9 @@ data/schemas.json.backup
 # generated data
 *.csv
 
+# logs
+*.log
+
 # uv-related artifacts
 uv.lock
 

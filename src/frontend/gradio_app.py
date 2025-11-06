@@ -32,8 +32,17 @@ class GradioInterface:
 
     def _initialize_services(self):
         """Lazily initialize services when needed."""
+        from src.core.config import settings
+
         if self.schema_generator is None:
-            self.schema_generator = SchemaGenerator()
+            # Use mock or real generator based on DEMO_MODE
+            if settings.DEMO_MODE:
+                from src.services.mock_schema_generator import MockSchemaGenerator
+                self.schema_generator = MockSchemaGenerator()
+            else:
+                from src.services.schema_generator import SchemaGenerator
+                self.schema_generator = SchemaGenerator()
+
         if self.data_generator is None:
             self.data_generator = DataGenerator()
         if self.csv_exporter is None:

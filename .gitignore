@@ -23,8 +23,5 @@ data/schemas.json.backup
 # logs
 *.log
 
-# uv-related artifacts
-uv.lock
-
 # CLAUDE-related artifacts
 CLAUDE.md

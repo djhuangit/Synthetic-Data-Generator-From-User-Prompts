@@ -6,7 +6,7 @@ A FastAPI-based service that generates realistic synthetic datasets from natural
 
 - **Gradio Web Interface**: User-friendly web UI for generating datasets without code
 - **Natural Language Input**: Describe your dataset needs in plain English
-- **Intelligent Schema Generation**: Powered by OpenAI GPT-4o-mini for Faker-compatible schemas
+- **Intelligent Schema Generation**: Powered by Claude Sonnet 4.5 for Faker-compatible schemas
 - **High-Quality Synthetic Data**: Uses Faker library with 80+ field types and domain-specific values
 - **Multiple Domains**: E-commerce, healthcare, finance, education, and general datasets
 - **CSV Export**: Ready-to-use CSV files compatible with pandas, Excel, and data science tools

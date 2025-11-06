@@ -245,7 +245,7 @@ def create_gradio_interface() -> gr.Blocks:
             """
             ---
 
-            **Powered by:** OpenAI GPT-4o-mini • Faker Library • FastAPI • Gradio
+            **Powered by:** Claude Sonnet 4.5 • Faker Library • FastAPI • Gradio
 
             **Note:** This service generates *synthetic* (fake) data for testing and development purposes only.
             """

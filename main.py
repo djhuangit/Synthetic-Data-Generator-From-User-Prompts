@@ -25,6 +25,27 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api/v1")
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Log startup information."""
+    import logging
+    logger = logging.getLogger("uvicorn")
+
+    from src.core.config import settings
+    logger.info(f"Demo Mode: {settings.DEMO_MODE}")
+
+    # Check if Gradio routes exist
+    routes = [route.path for route in app.routes]
+    has_gradio = any("/gradio" in path for path in routes)
+
+    if has_gradio:
+        logger.info("✅ Gradio routes detected")
+    else:
+        logger.warning("⚠️ No Gradio routes found - Gradio may not be mounted")
+
+    logger.info(f"Total routes registered: {len(routes)}")
+
+
 @app.get("/health")
 async def health_check() -> Dict:
     """Health check endpoint for monitoring service status."""
@@ -47,16 +68,23 @@ async def root():
 
 # Mount Gradio app
 # Import here to avoid issues if gradio is not installed
+import logging
+logger = logging.getLogger("uvicorn")
+
 try:
     from src.frontend.gradio_app import app as gradio_app
     import gradio as gr
 
     # Mount Gradio interface at /gradio path
     app = gr.mount_gradio_app(app, gradio_app, path="/gradio")
-    print("✅ Gradio interface mounted at /gradio")
+    logger.info("✅ Gradio interface mounted at /gradio")
 except ImportError as e:
-    print(f"⚠️ Gradio not available: {e}")
-    print("API-only mode: Install gradio to enable the web interface")
+    logger.warning(f"⚠️ Gradio not available: {e}")
+    logger.warning("API-only mode: Install gradio to enable the web interface")
+except Exception as e:
+    logger.error(f"❌ Failed to mount Gradio: {e}")
+    import traceback
+    logger.error(traceback.format_exc())
 
 
 if __name__ == "__main__":

@@ -86,7 +86,7 @@ This project uses the **BMAD** methodology for systematic development. To set up
 
 ## Running the Service with Gradio Frontend
 
-### Testing Without OpenAI API Key (Demo Mode)
+### Testing Without LLM API Key (Demo Mode)
 
 You can test the **entire application** without an LLM API key using Demo Mode:
 

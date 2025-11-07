@@ -65,7 +65,17 @@ cp .env.example .env
 
 ### Environment Variables
 ```bash
+# API Provider (openai or anthropic)
+API_PROVIDER=openai  # or anthropic
+
+# API Keys (set one based on your provider)
 OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# Demo Mode (true = no API key needed, false = uses API)
+DEMO_MODE=false
+
+# Optional settings
 CACHE_ENABLED=true
 LOG_LEVEL=INFO
 ```
@@ -291,22 +301,121 @@ data_generator_from_user_prompt/
 
 This application is configured for easy deployment to Heroku with a single Basic dyno ($7/month):
 
+#### Initial Setup
+
 ```bash
 # Login to Heroku
 heroku login
 
 # Create new app
 heroku create your-app-name
+```
 
-# Set environment variables
-heroku config:set OPENAI_API_KEY=your_key_here
+#### Configure Environment Variables
+
+**Choose Your API Provider:**
+
+```bash
+# For Anthropic Claude (Recommended)
+heroku config:set API_PROVIDER=anthropic
+heroku config:set ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# OR for OpenAI
+heroku config:set API_PROVIDER=openai
+heroku config:set OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional: Enable caching
 heroku config:set CACHE_ENABLED=true
+```
 
-# Deploy
+**Switch Between Demo Mode and Production Mode:**
+
+```bash
+# Enable Demo Mode (No API Key Required)
+heroku config:set DEMO_MODE=true
+heroku restart
+
+# Enable Production Mode (Uses API)
+heroku config:set DEMO_MODE=false
+heroku restart
+```
+
+**Verify Configuration:**
+
+```bash
+# View all environment variables
+heroku config
+```
+
+#### Deploy Application
+
+```bash
+# Deploy from your feature branch to Heroku's main branch
+git push heroku your-branch-name:main
+
+# Note: Heroku always deploys from the main branch.
+# The command above pushes your feature branch to Heroku's main branch.
+
+# OR deploy from main branch
 git push heroku main
+```
 
-# Open application
+#### Scale Dynos
+
+```bash
+# Scale to 1 Basic dyno (starts the app)
+heroku ps:scale web=1
+
+# Scale down to 0 (stops the app to save costs)
+heroku ps:scale web=0
+
+# View current dyno status
+heroku ps
+```
+
+#### Access Your Application
+
+```bash
+# Open application in browser
 heroku open
+
+# Get application URL
+heroku info | grep "Web URL"
+```
+
+#### Monitor and Debug
+
+```bash
+# View real-time logs
+heroku logs --tail
+
+# View recent logs
+heroku logs
+
+# View app information
+heroku info
+
+# Restart application
+heroku restart
+```
+
+#### Managing Your Heroku App
+
+```bash
+# View app info (includes dyno type, region, URL, etc.)
+heroku info
+
+# Restart app (useful after config changes)
+heroku restart
+
+# View current dyno type and status
+heroku ps
+
+# View all environment variables
+heroku config
+
+# Remove an environment variable
+heroku config:unset VARIABLE_NAME
 ```
 
 For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).

@@ -86,23 +86,6 @@ This project uses the **BMAD** methodology for systematic development. To set up
 
 ## Running the Service
 
-### Testing Without OpenAI API Key (Demo Mode)
-
-You can test the **entire application** without an OpenAI API key using Demo Mode:
-
-```bash
-# Install dependencies
-uv sync
-
-# Run in demo mode (no API key needed!)
-DEMO_MODE=true uv run python main.py
-
-# Or run the comprehensive test suite
-uv run python test_demo_mode.py
-```
-
-Demo Mode uses predefined templates for common data domains (e-commerce, healthcare, finance, etc.) and allows you to test Gradio, FastAPI, and all backend services without API costs. See [DEMO_MODE.md](DEMO_MODE.md) for details.
-
 ### Start the Server (with Gradio Frontend)
 ```bash
 # Install dependencies (including Gradio)
@@ -135,68 +118,6 @@ The Gradio interface provides an intuitive way to generate datasets:
 - "E-commerce product catalog with product names, categories, prices, ratings, and stock status"
 - "Healthcare patient records with names, ages, blood types, medical conditions, and departments"
 - "Financial transactions with account holders, account numbers, transaction amounts, dates, and merchants"
-
-## Testing Without OpenAI API Key
-
-You can test the complete pipeline without an OpenAI API key using the included test script:
-
-### Run Complete Pipeline Test
-```bash
-# Test all domains with mock schemas
-uv run python test_full_pipeline.py
-```
-
-This will:
-- Generate mock schemas for e-commerce, healthcare, and finance domains
-- Create synthetic data using the DataGenerator service
-- Export data to CSV format using the CSVExporter service  
-- Save CSV files to disk (`output_*.csv`)
-- Display performance metrics and sample data
-- Test different row counts (5, 10, 50, 100 rows)
-
-### Quick CLI Tests
-
-**Test DataGenerator directly:**
-```bash
-uv run python -c "
-from src.services.data_generator import DataGenerator
-from src.api.models import GeneratedSchema
-from datetime import datetime
-
-schema = GeneratedSchema(
-    description_hash='cli_test',
-    fields_schema={
-        'name': {'faker_method': 'name'},
-        'email': {'faker_method': 'email'},
-        'category': {'faker_method': 'ecommerce'}
-    },
-    created_at=datetime.now(),
-    domain='ecommerce'
-)
-
-generator = DataGenerator()
-dataset = generator.generate_data(schema, 5)
-print(f'Generated {dataset.row_count} rows')
-for row in dataset.data:
-    print(row)
-"
-```
-
-**Test CSV Export:**
-```bash
-uv run python -c "
-from src.services.csv_exporter import CSVExporter
-from src.services.data_generator import DataGenerator
-from src.api.models import GeneratedSchema
-from datetime import datetime
-
-# Create mock data
-schema = GeneratedSchema(description_hash='csv_test', fields_schema={'name': {'faker_method': 'name'}, 'email': {'faker_method': 'email'}}, created_at=datetime.now(), domain='test')
-dataset = DataGenerator().generate_data(schema, 3)
-csv = CSVExporter().export_to_csv(dataset, 'Test data')
-print(csv.csv_content)
-"
-```
 
 ## Architecture
 
@@ -297,7 +218,7 @@ data_generator_from_user_prompt/
 
 ## Deployment
 
-### Heroku Deployment (Recommended)
+### Heroku Deployment
 
 This application is configured for easy deployment to Heroku with a single Basic dyno ($7/month):
 
@@ -316,7 +237,7 @@ heroku create your-app-name
 **Choose Your API Provider:**
 
 ```bash
-# For Anthropic Claude (Recommended)
+# For Anthropic Claude
 heroku config:set API_PROVIDER=anthropic
 heroku config:set ANTHROPIC_API_KEY=your_anthropic_api_key_here
 

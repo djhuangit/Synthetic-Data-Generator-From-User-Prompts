@@ -84,15 +84,32 @@ LOG_LEVEL=INFO
 
 This project uses the **BMAD** methodology for systematic development. To set up BMAD for this project, refer to [this official repository](https://github.com/bmad-code-org/BMAD-METHOD) for more information.
 
-## Running the Service
+## Running the Service with Gradio Frontend
 
-### Start the Server (with Gradio Frontend)
+### Testing Without OpenAI API Key (Demo Mode)
+
+You can test the **entire application** without an LLM API key using Demo Mode:
+
+```bash
+# Install dependencies
+uv sync
+
+# Set the demo mode to true
+export DEMO_MODE=true 
+
+# Run in demo mode (no API key needed!)
+uv run python main.py
+```
+
+Demo Mode uses predefined templates for common data domains (e-commerce, healthcare, finance, etc.) and allows you to test Gradio, FastAPI, and all backend services without API costs.
+
+### Testing with LLM API Key
 ```bash
 # Install dependencies (including Gradio)
 uv sync
 
-# Set your OpenAI API key
-export OPENAI_API_KEY=your_key_here
+# Set your API key of your chosen LLM provider
+export ANTHROPIC_API_KEY=your_key_here
 
 # Run the integrated application
 uv run python main.py

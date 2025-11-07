@@ -65,7 +65,17 @@ cp .env.example .env
 
 ### Environment Variables
 ```bash
+# API Provider (openai or anthropic)
+API_PROVIDER=openai  # or anthropic
+
+# API Keys (set one based on your provider)
 OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# Demo Mode (true = no API key needed, false = uses API)
+DEMO_MODE=false
+
+# Optional settings
 CACHE_ENABLED=true
 LOG_LEVEL=INFO
 ```
@@ -74,32 +84,32 @@ LOG_LEVEL=INFO
 
 This project uses the **BMAD** methodology for systematic development. To set up BMAD for this project, refer to [this official repository](https://github.com/bmad-code-org/BMAD-METHOD) for more information.
 
-## Running the Service
+## Running the Service with Gradio Frontend
 
 ### Testing Without OpenAI API Key (Demo Mode)
 
-You can test the **entire application** without an OpenAI API key using Demo Mode:
+You can test the **entire application** without an LLM API key using Demo Mode:
 
 ```bash
 # Install dependencies
 uv sync
 
-# Run in demo mode (no API key needed!)
-DEMO_MODE=true uv run python main.py
+# Set the demo mode to true
+export DEMO_MODE=true 
 
-# Or run the comprehensive test suite
-uv run python test_demo_mode.py
+# Run in demo mode (no API key needed!)
+uv run python main.py
 ```
 
-Demo Mode uses predefined templates for common data domains (e-commerce, healthcare, finance, etc.) and allows you to test Gradio, FastAPI, and all backend services without API costs. See [DEMO_MODE.md](DEMO_MODE.md) for details.
+Demo Mode uses predefined templates for common data domains (e-commerce, healthcare, finance, etc.) and allows you to test Gradio, FastAPI, and all backend services without API costs.
 
-### Start the Server (with Gradio Frontend)
+### Testing with LLM API Key
 ```bash
 # Install dependencies (including Gradio)
 uv sync
 
-# Set your OpenAI API key
-export OPENAI_API_KEY=your_key_here
+# Set your API key of your chosen LLM provider
+export ANTHROPIC_API_KEY=your_key_here
 
 # Run the integrated application
 uv run python main.py
@@ -125,68 +135,6 @@ The Gradio interface provides an intuitive way to generate datasets:
 - "E-commerce product catalog with product names, categories, prices, ratings, and stock status"
 - "Healthcare patient records with names, ages, blood types, medical conditions, and departments"
 - "Financial transactions with account holders, account numbers, transaction amounts, dates, and merchants"
-
-## Testing Without OpenAI API Key
-
-You can test the complete pipeline without an OpenAI API key using the included test script:
-
-### Run Complete Pipeline Test
-```bash
-# Test all domains with mock schemas
-uv run python test_full_pipeline.py
-```
-
-This will:
-- Generate mock schemas for e-commerce, healthcare, and finance domains
-- Create synthetic data using the DataGenerator service
-- Export data to CSV format using the CSVExporter service  
-- Save CSV files to disk (`output_*.csv`)
-- Display performance metrics and sample data
-- Test different row counts (5, 10, 50, 100 rows)
-
-### Quick CLI Tests
-
-**Test DataGenerator directly:**
-```bash
-uv run python -c "
-from src.services.data_generator import DataGenerator
-from src.api.models import GeneratedSchema
-from datetime import datetime
-
-schema = GeneratedSchema(
-    description_hash='cli_test',
-    fields_schema={
-        'name': {'faker_method': 'name'},
-        'email': {'faker_method': 'email'},
-        'category': {'faker_method': 'ecommerce'}
-    },
-    created_at=datetime.now(),
-    domain='ecommerce'
-)
-
-generator = DataGenerator()
-dataset = generator.generate_data(schema, 5)
-print(f'Generated {dataset.row_count} rows')
-for row in dataset.data:
-    print(row)
-"
-```
-
-**Test CSV Export:**
-```bash
-uv run python -c "
-from src.services.csv_exporter import CSVExporter
-from src.services.data_generator import DataGenerator
-from src.api.models import GeneratedSchema
-from datetime import datetime
-
-# Create mock data
-schema = GeneratedSchema(description_hash='csv_test', fields_schema={'name': {'faker_method': 'name'}, 'email': {'faker_method': 'email'}}, created_at=datetime.now(), domain='test')
-dataset = DataGenerator().generate_data(schema, 3)
-csv = CSVExporter().export_to_csv(dataset, 'Test data')
-print(csv.csv_content)
-"
-```
 
 ## Architecture
 
@@ -287,9 +235,11 @@ data_generator_from_user_prompt/
 
 ## Deployment
 
-### Heroku Deployment (Recommended)
+### Heroku Deployment
 
 This application is configured for easy deployment to Heroku with a single Basic dyno ($7/month):
+
+#### Initial Setup
 
 ```bash
 # Login to Heroku
@@ -297,16 +247,113 @@ heroku login
 
 # Create new app
 heroku create your-app-name
+```
 
-# Set environment variables
-heroku config:set OPENAI_API_KEY=your_key_here
+#### Configure Environment Variables
+
+**Choose Your API Provider:**
+
+```bash
+# For Anthropic Claude
+heroku config:set API_PROVIDER=anthropic
+heroku config:set ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# OR for OpenAI
+heroku config:set API_PROVIDER=openai
+heroku config:set OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional: Enable caching
 heroku config:set CACHE_ENABLED=true
+```
 
-# Deploy
+**Switch Between Demo Mode and Production Mode:**
+
+```bash
+# Enable Demo Mode (No API Key Required)
+heroku config:set DEMO_MODE=true
+heroku restart
+
+# Enable Production Mode (Uses API)
+heroku config:set DEMO_MODE=false
+heroku restart
+```
+
+**Verify Configuration:**
+
+```bash
+# View all environment variables
+heroku config
+```
+
+#### Deploy Application
+
+```bash
+# Deploy from your feature branch to Heroku's main branch
+git push heroku your-branch-name:main
+
+# Note: Heroku always deploys from the main branch.
+# The command above pushes your feature branch to Heroku's main branch.
+
+# OR deploy from main branch
 git push heroku main
+```
 
-# Open application
+#### Scale Dynos
+
+```bash
+# Scale to 1 Basic dyno (starts the app)
+heroku ps:scale web=1
+
+# Scale down to 0 (stops the app to save costs)
+heroku ps:scale web=0
+
+# View current dyno status
+heroku ps
+```
+
+#### Access Your Application
+
+```bash
+# Open application in browser
 heroku open
+
+# Get application URL
+heroku info | grep "Web URL"
+```
+
+#### Monitor and Debug
+
+```bash
+# View real-time logs
+heroku logs --tail
+
+# View recent logs
+heroku logs
+
+# View app information
+heroku info
+
+# Restart application
+heroku restart
+```
+
+#### Managing Your Heroku App
+
+```bash
+# View app info (includes dyno type, region, URL, etc.)
+heroku info
+
+# Restart app (useful after config changes)
+heroku restart
+
+# View current dyno type and status
+heroku ps
+
+# View all environment variables
+heroku config
+
+# Remove an environment variable
+heroku config:unset VARIABLE_NAME
 ```
 
 For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).

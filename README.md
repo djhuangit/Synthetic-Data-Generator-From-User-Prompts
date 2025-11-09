@@ -2,6 +2,9 @@
 
 A FastAPI-based service that generates realistic synthetic datasets from natural language descriptions. Built with the assistance of **BMAD (Breakthrough Method of Agile AI-Driven Development)** methodology and **Claude Code**.
 
+## Live Demo
+Hosted on: https://data-gen.djhuang.dev/
+
 ## Features
 
 - **Gradio Web Interface**: User-friendly web UI for generating datasets without code
